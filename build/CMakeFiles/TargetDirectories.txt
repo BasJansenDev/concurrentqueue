@@ -1,0 +1,3 @@
+C:/Users/basj9/Projects/concurrentqueue/build/CMakeFiles/MyProject.dir
+C:/Users/basj9/Projects/concurrentqueue/build/CMakeFiles/edit_cache.dir
+C:/Users/basj9/Projects/concurrentqueue/build/CMakeFiles/rebuild_cache.dir

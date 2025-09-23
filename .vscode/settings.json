@@ -1,0 +1,12 @@
+{
+  "cmake.sourceDirectory": "${workspaceFolder}",
+  "cmake.buildDirectory": "${workspaceFolder}/build",
+  "cmake.generator": "Ninja",
+  "cmake.configureSettings": {
+    "CMAKE_C_COMPILER": "clang",
+    "CMAKE_CXX_COMPILER": "clang++",
+    "CMAKE_CXX_FLAGS": "--target=x86_64-w64-mingw32"
+  },
+  "C_Cpp.default.compilerPath": "c:\\Program Files\\clang+llvm-18.1.8-x86_64-pc-windows-msvc\\bin\\clang++.exe"
+}
+

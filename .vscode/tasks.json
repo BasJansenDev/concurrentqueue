@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "CMake Configure",
+      "type": "shell",
+      "command": "cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++",
+      "group": "build"
+    },
+    {
+      "label": "CMake Build",
+      "type": "shell",
+      "command": "cmake --build build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": "CMake Configure"
+    },
+    {
+      "label": "Run Executable",
+      "type": "shell",
+      "command": "./build/MyProject",
+      "problemMatcher": []
+    }
+  ]
+}
