@@ -1,8 +1,0 @@
-[
-{
-  "directory": "C:/Users/basj9/Projects/concurrentqueue/build",
-  "command": "C:\\PROGRA~1\\CLANG_~1.8-X\\bin\\CLANG_~1.EXE --target=x86_64-w64-mingw32 -std=gnu++17 -o CMakeFiles\\MyProject.dir\\src\\main.cpp.obj -c C:\\Users\\basj9\\Projects\\concurrentqueue\\src\\main.cpp",
-  "file": "C:/Users/basj9/Projects/concurrentqueue/src/main.cpp",
-  "output": "C:/Users/basj9/Projects/concurrentqueue/build/CMakeFiles/MyProject.dir/src/main.cpp.obj"
-}
-]

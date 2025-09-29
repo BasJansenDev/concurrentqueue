@@ -1,9 +1,16 @@
-cmake_minimum_required(VERSION 3.15)
-project(MyProject VERSION 1.0 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.14)
+project(concurrentqueue)
 
-# Use modern C++
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Add executable
-add_executable(${PROJECT_NAME} src/main.cpp)
+# Add gtest
+add_subdirectory(extern/googletest)
+
+# Your library (header-only, no sources yet)
+add_library(concurrentqueue INTERFACE)
+target_include_directories(concurrentqueue INTERFACE include)
+
+# Your tests
+add_executable(queue_tests tests/concurrentqueue-test.cpp)
+target_link_libraries(queue_tests PRIVATE concurrentqueue gtest gtest_main pthread)

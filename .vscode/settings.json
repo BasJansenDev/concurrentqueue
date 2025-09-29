@@ -3,7 +3,6 @@
   "cmake.buildDirectory": "${workspaceFolder}/build",
   "cmake.generator": "Ninja",
   "cmake.configureSettings": {
-    "CMAKE_C_COMPILER": "clang",
     "CMAKE_CXX_COMPILER": "clang++",
     "CMAKE_CXX_FLAGS": "--target=x86_64-w64-mingw32"
   },
