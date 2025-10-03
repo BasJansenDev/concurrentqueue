@@ -1,17 +1,22 @@
 {
-  "configurations": [
-    {
-      "name": "Win32-Clang-MinGW",
-      "intelliSenseMode": "clang-x64",
-      "compilerPath": "C:/Program Files/clang+llvm-18.1.8-x86_64-pc-windows-msvc/bin/clang++.exe",
-      "compileCommands": "${workspaceFolder}/build/compile_commands.json",
-      "includePath": [
-        "C:/msys64/mingw64/include",
-        "C:/msys64/mingw64/include/c++/15.2.0",
-        "C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include"
-      ],
-      "defines": []
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "name": "Win32-Clang-MinGW",
+            "intelliSenseMode": "clang-x64",
+            "compilerPath": "C:/Program Files/clang+llvm-18.1.8-x86_64-pc-windows-msvc/bin/clang++.exe",
+            "compileCommands": [
+                "${workspaceFolder}/build/compile_commands.json"
+            ],
+            "includePath": [
+                "C:/msys64/mingw64/include",
+                "C:/msys64/mingw64/include/c++/15.2.0",
+                "C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include",
+                "${workspaceFolder}/extern/googletest/googletest/include/gtest",
+                "C:/msys64/mingw64/include/c++/15.2.0/x86_64-w64-mingw32",
+                "${workspaceFolder}/extern/googletest/googletest/include"
+            ],
+            "defines": []
+        }
+    ],
+    "version": 4
 }
