@@ -1,4 +1,7 @@
-# Part 1: Building a not so fast, not lock-free, yet concurrent queue.
+---
+layout: post
+title: "Part 1: Building a not so fast, not lock-free, yet concurrent queue"
+---
 
 Starting off with the basics, there are a few key components required to create a concurrent queue that will help us build a foundation for later improvements. The name itself already gives us a great hint at what we’re trying to achieve:
 
