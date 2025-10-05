@@ -14,3 +14,10 @@ target_include_directories(concurrentqueue INTERFACE include)
 # Your tests
 add_executable(queue_tests tests/concurrentqueue-test.cpp)
 target_link_libraries(queue_tests PRIVATE concurrentqueue gtest gtest_main pthread)
+
+enable_testing()
+include(GoogleTest)
+gtest_discover_tests(queue_tests)
+
+add_compile_options(-Wall -Wextra -Wpedantic)
+

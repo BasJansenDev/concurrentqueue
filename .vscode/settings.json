@@ -8,7 +8,15 @@
   },
   "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
   "C_Cpp.default.compilerPath": "C:/msys64/mingw64/bin/clang++.exe",
-  "C_Cpp.default.intelliSenseMode": "clang-x64",
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "clangd.arguments": [
+    "--compile-commands-dir=${workspaceFolder}/build",
+  "--clang-tidy",
+  "--all-scopes-completion",
+  "--header-insertion=never"
+  ],
+  "C_Cpp.errorSquiggles": "enabled",
+  "C_Cpp.default.diagnostics": true,
   "C_Cpp.default.cppStandard": "c++20"
 }
 
