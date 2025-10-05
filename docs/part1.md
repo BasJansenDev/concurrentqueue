@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Part 1: Building a not so fast, not lock-free, yet concurrent queue"
+title: "Part 1: Setting up requirements and a testing framework"
 ---
 
 Starting off with the basics, there are a few key components required to create a concurrent queue that will help us build a foundation for later improvements. The name itself already gives us a great hint at what we’re trying to achieve:
@@ -34,10 +34,6 @@ class Worker {
         void init(std::vector<T> _vector)
         void pushAll()
         void readAll()
-    private:
-        std::vector<T> vector;
-        std::shared_ptr<ConcurrentQueue<T>> queue;
-        std::thread thread{};
 };
 ```
 
@@ -60,4 +56,82 @@ Then, we're letting the worker push all these values into the queue, and let it 
     worker.pushAll();
     worker.readAll();
 ```
+
+That's the Production and Consumption dealt with. However, we're now going to need some ways where we prove both the correctness of the queue, along with a printout of our speed. Since we're working with a simple int vector here, with a single producer and consumer, so we can add in the following assertion:
+
+```
+    ASSERT_EQ(worker.readVector, loadedVector);
+```
+Where readVector is a member variable of our Worker, into which it writes the read values. For our speed we're taking a simple approach for now, by just using `std::chrono::high_resolution_clock`. This will serve for now since our implementation is not that speedy yet, but later we'll look into using tooling such as `perf`, since the high_resolution_clock is easily affected by other processes going on in the background of our operating systems. The final test that we then have is:
+
+```
+TEST_F(ConcurrentQueueTestSuite, BenchmarkSingleThreadTest) {
+    std::vector<int> loadedVector{};
+    for(int i = 0; i < 1e8; i++){
+        loadedVector.emplace_back(i);
+    }
+    auto sut = std::make_shared<ConcurrentQueue<int>>();
+    Worker<int> worker{sut};
+    worker.init(loadedVector);
+    auto pre = std::chrono::high_resolution_clock::now();
+    worker.pushAll();
+    worker.readAll();
+    auto aft = std::chrono::high_resolution_clock::now();
+    std::cout << std::chrono::duration(aft - pre) << "\n";
+    ASSERT_EQ(worker.readVector, loadedVector);
+}
+```
+
+This crosses off our checks for measurable speed and correctness, but not yet for concurrency, since reading and writing doesn't happen in parallel. To this end we create the following test:
+
+```
+TEST_F(ConcurrentQueueTestSuite, BenchmarkParallelReadWriteTest) {
+    std::vector<int> loadedVector{};
+    for(int i = 0; i < 1e8; i++){
+        loadedVector.emplace_back(i);
+    }
+    auto sut = std::make_shared<ConcurrentQueue<int>>();
+    Worker<int> worker{sut};
+    worker.init(loadedVector);
+    auto pre = std::chrono::high_resolution_clock::now();
+    auto writerThread = std::thread([&](){worker.pushAll();});
+    auto readerThread = std::thread([&](){worker.readAll();});
+    writerThread.join();
+    readerThread.join();
+    auto aft = std::chrono::high_resolution_clock::now();
+    std::cout << std::chrono::duration(aft - pre) << "\n";
+    ASSERT_EQ(worker.readVector, loadedVector);
+}
+```
+Where we wrap production and consumption in two separate threads for it to occur simultaneously. Now we have concurrency checked off too, but only for SPSC. We can expand on the test above by just adding in more threads:
+
+```
+TEST_F(ConcurrentQueueTestSuite, BenchmarkMultiThreadTest) {
+    std::vector<Worker<int>> workerVector{};
+    auto sut = std::make_shared<ConcurrentQueue<int>>();
+    std::vector<int> loadedVector{};
+    for(int i = 0; i < 1e7; i++){
+        loadedVector.emplace_back(i);
+    }
+
+    for(int i = 0; i < 10; i++){
+        auto worker = Worker<int>(sut);
+        worker.init(loadedVector);
+        worker.pushAll();
+        workerVector.emplace_back(std::move(worker));
+    }
+    auto pre = std::chrono::system_clock::now();
+    std::vector<std::thread> threadVector;
+    for(auto& worker : workerVector) {
+        threadVector.emplace_back(std::thread([&worker](){worker.readAll();}));
+    }
+    for(auto& thread : threadVector) {
+        thread.join();
+    }
+    auto aft = std::chrono::system_clock::now();
+    std::cout << std::chrono::duration(aft - pre) << "\n";
+}
+```
+
+And there we have it. A basic testing framework that allows us to test for speed, correctness and concurrency. Now, we can start looking into actually building a queue!
 
