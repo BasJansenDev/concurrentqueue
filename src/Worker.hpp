@@ -9,20 +9,24 @@ class Worker {
         }
 
         void init(std::vector<T> _vector) {
-            vector = _vector;
+            writeVector = _vector;
         }
 
         void pushAll() {
-            for(auto i : vector){
+            for(auto i : writeVector){
                 queue->push(i);
             }
         }
 
         void readAll() {
-            while(const auto& v = queue->try_pop() != std::nullopt){};
+            while(const auto& v = queue->try_pop() != std::nullopt){
+                readVector.emplace_back(v);
+            };
         }
+        
+        std::vector<T> writeVector;
+        std::vector<T> readVector;
     private:
-        std::vector<T> vector;
         std::shared_ptr<ConcurrentQueue<T>> queue;
         std::thread thread{};
 };

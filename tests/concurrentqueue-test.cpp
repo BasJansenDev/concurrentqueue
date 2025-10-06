@@ -30,19 +30,34 @@ TEST_F(ConcurrentQueueTestSuite, BenchmarkSingleThreadTest) {
     for(int i = 0; i < 1e8; i++){
         loadedVector.emplace_back(i);
     }
-    ConcurrentQueue<int> sut{};
-    auto pre = std::chrono::system_clock::now();
-    for(int j : loadedVector){
-        sut.push(j);
-    }
-    auto popped = sut.try_pop();
-    while(popped.has_value()) {
-        popped = sut.try_pop();
-    }
-    auto aft = std::chrono::system_clock::now();
+    auto sut = std::make_shared<ConcurrentQueue<int>>();
+    Worker<int> worker{sut};
+    worker.init(loadedVector);
+    auto pre = std::chrono::high_resolution_clock::now();
+    worker.pushAll();
+    worker.readAll();
+    auto aft = std::chrono::high_resolution_clock::now();
     std::cout << std::chrono::duration(aft - pre) << "\n";
+    ASSERT_EQ(worker.readVector, loadedVector);
 }
 
+TEST_F(ConcurrentQueueTestSuite, BenchmarkParallelReadWriteTest) {
+    std::vector<int> loadedVector{};
+    for(int i = 0; i < 1e8; i++){
+        loadedVector.emplace_back(i);
+    }
+    auto sut = std::make_shared<ConcurrentQueue<int>>();
+    Worker<int> worker{sut};
+    worker.init(loadedVector);
+    auto pre = std::chrono::high_resolution_clock::now();
+    auto writerThread = std::thread([&](){worker.pushAll();});
+    auto readerThread = std::thread([&](){worker.readAll();});
+    writerThread.join();
+    readerThread.join();
+    auto aft = std::chrono::high_resolution_clock::now();
+    std::cout << std::chrono::duration(aft - pre) << "\n";
+    ASSERT_EQ(worker.readVector, loadedVector);
+}
 
 TEST_F(ConcurrentQueueTestSuite, BenchmarkMultiThreadTest) {
     std::vector<Worker<int>> workerVector{};
